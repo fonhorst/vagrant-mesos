@@ -36,17 +36,23 @@ Vagrant.configure("2") do |config|
     config.cache.enable :chef
   end
 
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+     config.proxy.http = "http://proxy.ifmo.ru:3128"
+     config.proxy.no_proxy = "localhost,127.0.0.1"
+  end
+
   is_plugin("vagrant-berkshelf")
   is_plugin("vagrant-omnibus")
   is_plugin("vagrant-hosts")
-
+  is_plugin("vagrant-proxyconf")
   # define VMs. all VMs have identical configuration.
   [ninfos[:zk], ninfos[:master], ninfos[:slave]].flatten.each_with_index do |ninfo, i|
-    config.vm.define ninfo[:hostname] do |cfg|
+   
+   config.vm.define ninfo[:hostname] do |cfg|
 
       cfg.vm.provider :virtualbox do |vb, override|
         override.vm.hostname = ninfo[:hostname]
-        override.vm.network :private_network, :ip => ninfo[:ip]
+	override.vm.network :public_network, ip: ninfo[:ip], netmask: "255.255.0.0", bridge: "enp22s0f5"
         override.vm.provision :hosts
 
         vb.name = 'vagrant-mesos-' + ninfo[:hostname]
@@ -199,10 +205,10 @@ Vagrant.configure("2") do |config|
 
   if conf["marathon_enable"] then
     config.vm.define :marathon do |cfg|
-      marathon_ip = conf["marathon_ipbase"]+"11"
+      marathon_ip = conf["marathon_ipbase"]+"86"
       cfg.vm.provider :virtualbox do |vb, override|
         override.vm.hostname = "marathon"
-        override.vm.network :private_network, :ip => marathon_ip
+        override.vm.network :public_network, ip: marathon_ip, netmask: "255.255.0.0", bridge: "enp22s0f5"
         override.vm.provision :hosts
 
         vb.name = 'vagrant-mesos-' + "marathon"

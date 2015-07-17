@@ -18,9 +18,10 @@ def gen_node_infos(cluster_yml)
   master_instance_type = cluster_yml['master_instance_type']
   slave_instance_type = cluster_yml['slave_instance_type']
 
+  
   master_infos = (1..master_n).map do |i|
                    { :hostname => "master#{i}",
-                     :ip => master_ipbase + "#{10+i}",
+                     :ip => master_ipbase + "#{70+i}",
                      :mem => master_mem,
                      :cpus => master_cpus,
                      :instance_type => master_instance_type
@@ -28,7 +29,7 @@ def gen_node_infos(cluster_yml)
                  end
   slave_infos = (1..slave_n).map do |i|
                    { :hostname => "slave#{i}",
-                     :ip => slave_ipbase + "#{10+i}",
+                     :ip => slave_ipbase + "#{75+i}",
                      :mem => slave_mem,
                      :cpus => slave_cpus,
                      :instance_type => slave_instance_type
@@ -36,7 +37,7 @@ def gen_node_infos(cluster_yml)
                  end
   zk_infos = (1..zk_n).map do |i|
                { :hostname => "zk#{i}",
-                 :ip => zk_ipbase + "#{10+i}",
+                 :ip => zk_ipbase + "#{80+i}",
                  :mem => zk_mem,
                  :cpus => zk_cpus,
                  :instance_type => zk_instance_type
